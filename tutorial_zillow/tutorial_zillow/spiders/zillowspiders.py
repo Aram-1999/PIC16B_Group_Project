@@ -8,12 +8,10 @@ class zillowspider(scrapy.Spider):
         
         def parse(self,response):    
             for house in response.css("article a::attr(href)").getall():
-                print("\n")
-                print(house)
-                #yield scrapy.Request(response.css("div article a").attrib["href"],callback = self.parse_at_home)
-            #url = response.css("#grid-search-results > div.search-pagination > nav > ul:last-child a::attr(href)").getall()
-            #next_page = "https://www.zillow.com" + url[-1]    
-            #yield scrapy.Request(next_page, callback=self.parse)
+                yield scrapy.Request(house,callback = self.parse_at_home)
+            url = response.css("#grid-search-results > div.search-pagination > nav > ul:last-child a::attr(href)").getall()
+            next_page = "https://www.zillow.com" + url[-1]    
+            yield scrapy.Request(next_page, callback=self.parse)
             
         def parse_at_home(self,response):
             pass
@@ -29,30 +27,3 @@ class zillowspider(scrapy.Spider):
                  "address": address
             }
             
-
-        def parse_next(self, response):
-            """
-            This method finds the hyperlink to the next webpage and 
-            passes it to another parser function.
-            """
-
-            # this command finds the url to the next page
-            url = response.css("#grid-search-results > div.search-pagination > nav > ul:last-child a::attr(href)").getall()
-            next_page = "https://www.zillow.com" + url[-1]
-            
-            # joins the initial link to the url found above
-            yield Request(next_page, callback=self.parse_full_credit)
-
-        def parse_listing(self, response):
-            price = response.css('div.hdp__sc-1s2b8ok-1.hGMTgV span:first-of-type span::text').get()
-            info = response.css('span.Text-c11n-8-73-0__sc-aiai24-0.kHeRng strong::text').getall()
-            address = response.css('h1.Text-c11n-8-73-0__sc-aiai24-0.kHeRng::text').getall()
-
-            yield {
-                 "price": int(price.replace(',', '')),
-                 "bed": int(info[0]),
-                 "bath": int(info[1]),
-                 "sqft": int(info[2].replace(',', '')),
-                 "address": address
-            }
-

@@ -1,4 +1,5 @@
 import scrapy 
+from scrapy.http import Request
 
 class zillowspider(scrapy.Spider):
         name = "zillow"
@@ -7,12 +8,10 @@ class zillowspider(scrapy.Spider):
         
         def parse(self,response):    
             for house in response.css("article a::attr(href)").getall():
-                print("\n")
-                print(house)
-                #yield scrapy.Request(response.css("div article a").attrib["href"],callback = self.parse_at_home)
-            #url = response.css("#grid-search-results > div.search-pagination > nav > ul:last-child a::attr(href)").getall()
-            #next_page = "https://www.zillow.com" + url[-1]    
-            #yield scrapy.Request(next_page, callback=self.parse)
+                yield scrapy.Request(house,callback = self.parse_at_home)
+            url = response.css("#grid-search-results > div.search-pagination > nav > ul:last-child a::attr(href)").getall()
+            next_page = "https://www.zillow.com" + url[-1]    
+            yield scrapy.Request(next_page, callback=self.parse)
             
         def parse_at_home(self,response):
             pass
@@ -27,6 +26,4 @@ class zillowspider(scrapy.Spider):
                  "sqft": int(info[2].replace(',', '')),
                  "address": address
             }
-            
-
             
