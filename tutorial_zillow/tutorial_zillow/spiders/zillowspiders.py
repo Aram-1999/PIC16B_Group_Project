@@ -25,3 +25,16 @@ class zillowspider(scrapy.Spider):
             
             # joins the initial link to the url found above
             yield Request(next_page, callback=self.parse_full_credit)
+
+        def parse_listing(self, response):
+            price = response.css('div.hdp__sc-1s2b8ok-1.hGMTgV span:first-of-type span::text').get()
+            info = response.css('span.Text-c11n-8-73-0__sc-aiai24-0.kHeRng strong::text').getall()
+            address = response.css('h1.Text-c11n-8-73-0__sc-aiai24-0.kHeRng::text').getall()
+
+            yield {
+                 "price": int(price.replace(',', '')),
+                 "bed": int(info[0]),
+                 "bath": int(info[1]),
+                 "sqft": int(info[2].replace(',', '')),
+                 "address": address
+            }
