@@ -1,4 +1,5 @@
 import scrapy 
+from scrapy.http import Request
 
 class zillowspider(scrapy.Spider):
         name = "zillow"
@@ -10,3 +11,17 @@ class zillowspider(scrapy.Spider):
             for block in response.css("div.StyledPropertyCardDataArea-c11n-8-82-3__sc-yipmu-0.eTKvfN"):
                 for text in response.css("div.StyledPropertyCardDataArea-c11n-8-82-3__sc-yipmu-0.eTKvfN"):
                     print(response.css("li b::text").get())
+
+
+        def parse_next(self, response):
+            """
+            This method finds the hyperlink to the next webpage and 
+            passes it to another parser function.
+            """
+
+            # this command finds the url to the next page
+            url = response.css("#grid-search-results > div.search-pagination > nav > ul:last-child a::attr(href)").getall()
+            next_page = "https://www.zillow.com" + url[-1]
+            
+            # joins the initial link to the url found above
+            yield Request(next_page, callback=self.parse_full_credit)
