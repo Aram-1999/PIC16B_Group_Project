@@ -20,7 +20,7 @@ class zillowspider(scrapy.Spider):
             address = response.css('h1.Text-c11n-8-73-0__sc-aiai24-0.kHeRng::text').getall()
 
             yield {
-                 "price": int(price.replace(',', '')),
+                 "price": int(price[1:].replace(',', '')),
                  "bed": int(info[0]),
                  "bath": int(info[1]),
                  "sqft": int(info[2].replace(',', '')),
