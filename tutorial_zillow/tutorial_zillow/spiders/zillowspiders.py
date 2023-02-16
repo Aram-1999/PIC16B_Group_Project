@@ -8,22 +8,25 @@ class zillowspider(scrapy.Spider):
         
         def parse(self,response):    
             for house in response.css("article a::attr(href)").getall():
+            #for house in response.css("div > div.StyledPropertyCardDataWrapper-c11n-8-84-2__sc-1omp4c3-0.jIcpOJ.property-card-data > a::attr(href)").getall():
                 yield scrapy.Request(house,callback = self.parse_at_home)
+
             url = response.css("#grid-search-results > div.search-pagination > nav > ul:last-child a::attr(href)").getall()
-            next_page = "https://www.zillow.com" + url[-1]    
-            yield scrapy.Request(next_page, callback=self.parse)
+            if url:
+                next_page = "https://www.zillow.com" + url[-1]    
+                yield scrapy.Request(next_page, callback=self.parse)
             
         def parse_at_home(self,response):
-            pass
-            price = response.css('div.hdp__sc-1s2b8ok-1.hGMTgV span:first-of-type span::text').get()
-            info = response.css('span.Text-c11n-8-73-0__sc-aiai24-0.kHeRng strong::text').getall()
-            address = response.css('h1.Text-c11n-8-73-0__sc-aiai24-0.kHeRng::text').getall()
+            price = response.css("div.hdp__sc-1s2b8ok-1.hGMTgV span:first-of-type span::text").get()
+            #info = response.css("div.layout-wrapper > div.layout-container > div.data-column-container > div.summary-container > div > div:nth-child(1) > div > div > div.hdp__sc-1s2b8ok-0.bhouud > div > div > span strong::text").getall()
+            info = response.css("span.Text-c11n-8-73-0__sc-aiai24-0.kHeRng strong::text").getall()
+            address = response.css("h1.Text-c11n-8-73-0__sc-aiai24-0.kHeRng::text").getall()
 
             yield {
                  "price": int(price[1:].replace(',', '')),
                  "bed": int(info[0]),
                  "bath": int(info[1]),
                  "sqft": int(info[2].replace(',', '')),
-                 "address": address
+                "address": address
             }
             
