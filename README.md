@@ -11,4 +11,4 @@ https://apify.com/
     - Los Angeles is already done 
 4) Change the type to FOR SALE 
 5) Set maximum to 1500 
-6) Wait for ~ 30 mins, do not abort 
+6) Wait for ~ 30 mins, do not abort. 
