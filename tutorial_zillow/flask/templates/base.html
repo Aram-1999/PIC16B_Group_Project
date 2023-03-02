@@ -1,0 +1,37 @@
+<!doctype html>
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
+<title>{% block title %}{% endblock %} - House price prediction</title>
+<nav>
+    <h1>House price prediction</h1>
+</nav>
+
+<ul>
+    <li><a href="{{ url_for('data_collection') }}">Data Collection</a></li>
+    <li><a href="{{ url_for('visualization') }}">Visualization</a></li>
+</ul>
+
+
+<form method="post" enctype="multipart/form-data",action="{{ url_for('data_collection') }}">
+    <select id="pet-select">
+        <option value="">--Please choose an option--</option>
+        <option value="Los Angeles">Los Angeles</option>
+        <option value="New York">New York</option>
+        <option value="Chicago">Chicago</option>
+        <option value="Huston">Huston</option>
+        <option value="Phoenix">Phoenix</option>
+        <option value="San Diego">San Diego</option>
+        <option value="Dallas">Dallas</option>
+        <option value="Philadelphia">Philadelphia</option>
+        <option value="San Antonio">San Antonio</option>
+        <option value="San Jose">San Jose</option>
+    
+    </select><br>
+    <input type="submit" value="Submit">
+</form> 
+
+<section class="content">
+    <header>
+        {% block header %}{% endblock %}
+    </header>
+    {% block content %}{% endblock %}
+</section>
