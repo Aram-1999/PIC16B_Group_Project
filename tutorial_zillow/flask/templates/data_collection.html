@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Data Collection{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<form method="post">
+    <label for="bed">Bedrooms:</label>
+    <br>
+    <input type="number" name="bed" id="bed">
+    <br>
+    <label for="bath">Bathrooms:</label>
+    <br>
+    <input type="number" name="bath" id="bath">
+    <br>
+    <label for="sqft">Square feet:</label>
+    <br>
+    <input type="number" name="sqft" id="sqft">
+    <br><br>
+    <input type="submit" value="Submit">
+</form>
+
+{% if bed %}
+<p>You entered:</p>
+<p>{{bed}} bedrooms</p>
+{% endif %}
+{% if bath %}
+<p>{{bath}} bathrooms</p>
+{% endif %}
+{% if sqft %}
+<p>{{sqft}} sqft</p>
+{% endif %}
+
+{% endblock %}
