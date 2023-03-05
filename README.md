@@ -7,18 +7,17 @@
 https://apify.com/ 
 1) Create free account 
 2) Search for the Zillow Real Estate API scraper
-3) Enter one of the following cities
-    
-    -"Chicago"  
-    - "Huston
-    - "Phoenix"
-    - "San Diego"
-    -"Dallas"
-    - "Philadelphia"
-    - San Antonio" 
-    - "San Jose"
-    - "New York" 
-    - "Los Angeles" DONE
+3) Enter one of the following cities  
+    "Chicago"  
+    "Huston
+    "Phoenix"
+    "San Diego"
+    "Dallas"
+    "Philadelphia"
+    San Antonio" 
+    "San Jose"
+    "New York" 
+    "Los Angeles" DONE
 	
 4) Change the type to FOR SALE 
 5) Set maximum to 1500 
