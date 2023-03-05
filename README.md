@@ -17,7 +17,7 @@ https://apify.com/
     -"Philadelphia"
     -San Antonio" 
     -"San Jose"
-    -"New York" 
+    -"New York" DONE
     -"Los Angeles" DONE
 	
 4) Change the type to FOR SALE 
