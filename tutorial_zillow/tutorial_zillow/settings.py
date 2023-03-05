@@ -6,19 +6,24 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+from shutil import which 
 
 BOT_NAME = 'tutorial_zillow'
 
 SPIDER_MODULES = ['tutorial_zillow.spiders']
 NEWSPIDER_MODULE = 'tutorial_zillow.spiders'
 
-
+SELENIUM_DRIVER_NAME = 'firefox'
+SELENIUM_DRIVER_EXECUTABLE_PATH = which('geckodriver')
+SELENIUM_DRIVER_ARGUMENTS = ['-headless'] 
+#DOWNLOADER_MIDDLEWARES = {
+#    'myproject.middlewares.CustomDownloaderMiddleware': 543,
+#}
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-USER_AGENT = 'Mozilla/5.0 (iPad; CPU OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148'
+USER_AGENT = 'custom user agents' 'http://www.example.com'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
-
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
 
@@ -26,13 +31,13 @@ ROBOTSTXT_OBEY = False
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
 #DOWNLOAD_DELAY = 3
-DOWNLOAD_DELAY = .2
+DOWNLOAD_DELAY = 10
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-#COOKIES_ENABLED = False
+COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
@@ -53,6 +58,13 @@ DOWNLOAD_DELAY = .2
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
 #    'tutorial_zillow.middlewares.TutorialZillowDownloaderMiddleware': 543,
+#}
+
+#DOWNLOADER_MIDDLEWARES = {
+#    'scrapy_headless.SeleniumMiddleware': 800
+#}
+#SPIDER_MIDDLEWARES = {
+#    'scrapy_headless.SeleniumMiddleware': 800
 #}
 
 # Enable or disable extensions
@@ -87,3 +99,7 @@ DOWNLOAD_DELAY = .2
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+DOWNLOADER_MIDDLEWARES = {
+    'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
+    'scrapy_user_agents.middlewares.RandomUserAgentMiddleware': 400,
+}

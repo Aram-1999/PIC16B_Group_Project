@@ -1,32 +1,37 @@
 import scrapy 
 from scrapy.http import Request
+from selenium import webdriver
+import scrapy
+from bs4 import BeautifulSoup
+import re
+from scrapy.selector import Selector
 
+ 
 class zillowspider(scrapy.Spider):
-        name = "zillow"
+
+    name = "zillow"
         
-        start_urls = ["https://www.zillow.com/phoenix-az/houses/?searchQueryState=%7B%22pagination%22%3A%7B%7D%2C%22usersSearchTerm%22%3A%22Phoenix%2C%20AZ%22%2C%22mapBounds%22%3A%7B%22west%22%3A-112.54665134179687%2C%22east%22%3A-111.59908054101562%2C%22south%22%3A33.156472387949066%2C%22north%22%3A34.11004882322404%7D%2C%22regionSelection%22%3A%5B%7B%22regionId%22%3A40326%2C%22regionType%22%3A6%7D%5D%2C%22isMapVisible%22%3Atrue%2C%22filterState%22%3A%7B%22con%22%3A%7B%22value%22%3Afalse%7D%2C%22apa%22%3A%7B%22value%22%3Afalse%7D%2C%22mf%22%3A%7B%22value%22%3Afalse%7D%2C%22ah%22%3A%7B%22value%22%3Atrue%7D%2C%22sort%22%3A%7B%22value%22%3A%22globalrelevanceex%22%7D%2C%22land%22%3A%7B%22value%22%3Afalse%7D%2C%22tow%22%3A%7B%22value%22%3Afalse%7D%2C%22manu%22%3A%7B%22value%22%3Afalse%7D%2C%22apco%22%3A%7B%22value%22%3Afalse%7D%7D%2C%22isListVisible%22%3Atrue%7D"]
+    start_urls = ["https://www.realtor.com/realestateandhomes-search/Phoenix_AZ"]
         
-        def parse(self,response):    
-            for house in response.css("article a::attr(href)").getall():
+    def parse(self, response):
+        for house in response.css("div a::attr(href)").getall():    
             #for house in response.css("div > div.StyledPropertyCardDataWrapper-c11n-8-84-2__sc-1omp4c3-0.jIcpOJ.property-card-data > a::attr(href)").getall():
-                yield scrapy.Request(house,callback = self.parse_at_home)
+            yield response.follow(url=house,callback=self.parse_at_home)
 
-            url = response.css("#grid-search-results > div.search-pagination > nav > ul:last-child a::attr(href)").getall()
-            if url:
-                next_page = "https://www.zillow.com" + url[-1]    
-                yield scrapy.Request(next_page, callback=self.parse)
+        url = response.css("a.item.btn[aria-label='Go to next page']::attr(href)").getall()
+        if url:
+            next_page = "https://www.realtor.com" + url[-1]    
+            yield response.follow(url=next_page,callback=self.parse)
             
-        def parse_at_home(self,response):
-            price = response.css("div.hdp__sc-1s2b8ok-1.hGMTgV span:first-of-type span::text").get()
+    def parse_at_home(self,response):
+        price = response.css("div.Price__Component-rui__x3geed-0.gipzbd::text").get()
             #info = response.css("div.layout-wrapper > div.layout-container > div.data-column-container > div.summary-container > div > div:nth-child(1) > div > div > div.hdp__sc-1s2b8ok-0.bhouud > div > div > span strong::text").getall()
-            info = response.css("span.Text-c11n-8-73-0__sc-aiai24-0.kHeRng strong::text").getall()
-            address = response.css("h1.Text-c11n-8-73-0__sc-aiai24-0.kHeRng::text").getall()
-
+        bed_bath_sqr = response.css("ul.PropertyMetastyles__StyledPropertyMeta-rui__sc-1g5rdjn-0.dAKbvN li span::text").getall()
+        if price and bed_bath_sqr:
             yield {
-                 "price": int(price[1:].replace(',', '')),
-                 "bed": int(info[0]),
-                 "bath": int(info[1]),
-                 "sqft": int(info[2].replace(',', '')),
-                "address": address
-            }
-            
+                "price": price,
+                "test": bed_bath_sqr
+                }
+
+
+

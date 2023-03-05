@@ -1,0 +1,57 @@
+<!doctype html>
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
+<html>
+    <head>
+        <style>
+            h1.webpage_title {text-align: center;
+                font-family: "Arial";
+                font-size: 40px;
+            }
+            span.fade-in::before{
+                font-family: "MV Boli";
+                content: "Los Angeles";
+                font-size: 45px;
+                animation: fadeInAnimation ease 5s;
+                animation-delay: 2s;
+                animation-duration: 30s;
+                animation-fill-mode: forwards;
+                animation-iteration-count: infinite;
+            }
+            @keyframes fadeInAnimation {
+            5.5% {content: "New York"}
+            16.5% { content: "Chicago"}    
+            27.5% {content: "Huston"}
+            38.5% {content: "Phoenix"}
+            49.5% {content: "San Diego"}
+            60.5% {content: "Dallas"}
+            71.5% {content: "Philadelphia"}
+            82.5% {content: "San Antonio"}  
+            93.5% {content: "San Jose"}
+            }
+            img{
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+                width: 50%;
+            }
+            
+        </style>
+    </head>
+    <body>
+    <title>{% block title %} House Prices{% endblock %} - </title>
+    <nav>
+        <h1 class = "webpage_title">Understanding the Housing Market in  <span class="fade-in">  </span>  </h1> 
+    </nav>
+
+    <ul>
+        <li><a href="{{ url_for('data_collection') }}">Data Collection</a></li>
+        <li><a href="{{ url_for('visualization') }}">Visualization</a></li>
+    </ul>     
+        
+    
+    <section class="content">
+    <header>
+        {% block header %}{% endblock %}
+    </header>
+    {% block content %}{% endblock %}
+</section>
