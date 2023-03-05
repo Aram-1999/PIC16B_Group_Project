@@ -8,6 +8,7 @@ https://apify.com/
 1) Create free account 
 2) Search for the Zillow Real Estate API scraper
 3) Enter one of the following cities  
+
     "Chicago"  
     "Huston
     "Phoenix"
