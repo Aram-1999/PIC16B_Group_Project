@@ -30,7 +30,7 @@ Tasks:
 
 - Add inputs for year made, home type, zip code (maybe? Would have to be a drop down option), living area  on the data_collection html 
 - Create the data_visualizaition html and have it be connected to the data_collection html
-- Create database to house all the datasets and create a fourth page view_data html that would be connected to data_visualization html so that users can look at the csv data for their city
+- Create database to house all the datasets and create a fourth page view_data html that would be connected to data_visualization html so that users can look at the csv data for their city (JUN)
 
 *I added query parameters based on which city they clicked which you can see in the html ("?LosAngeles")
 So that all our urls keep track of which city we clicked initally. This way we can use request.args on pages 3 and 4 to pull the city information and use it to subset our database  
