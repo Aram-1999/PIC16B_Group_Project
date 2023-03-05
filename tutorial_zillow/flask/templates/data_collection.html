@@ -5,17 +5,36 @@
 {% block content %}
 <form method="post">
     <label for="bed">Bedrooms:</label>
-    <br>
     <input type="number" name="bed" id="bed">
-    <br>
+    <br><br>
+
     <label for="bath">Bathrooms:</label>
-    <br>
     <input type="number" name="bath" id="bath">
-    <br>
+    <br><br>
+
     <label for="sqft">Square feet:</label>
-    <br>
     <input type="number" name="sqft" id="sqft">
     <br><br>
+
+    <label for="year_made">Year made:</label>
+    <input type="number" name="year_made" id="year_made">
+    <br><br>
+
+    <label for="home_type">Home type:</label>
+    <select name="home_type" id="home_type">
+        <option value="apartment">Apartment</option>
+        <option value="condo">Condo</option>
+        <option value="lot">Lot</option>
+        <option value="multi_family">Multi Family Home</option>
+        <option value="single_family">Single Family Home</option>
+        <option vale="townhouse">Townhouse</option>
+    </select>
+    <br><br>
+
+    <label for="zipcode">Zipcode:</label>
+    <input type="number" name="zipcode" id="zipcode">
+    <br><br>
+
     <input type="submit" value="Submit">
 </form>
 
@@ -23,11 +42,25 @@
 <p>You entered:</p>
 <p>{{bed}} bedrooms</p>
 {% endif %}
+
 {% if bath %}
 <p>{{bath}} bathrooms</p>
 {% endif %}
+
 {% if sqft %}
 <p>{{sqft}} sqft</p>
+{% endif %}
+
+{% if year_made %}
+<p>made in {{year_made}}</p>
+{% endif %}
+
+{% if home_type %}
+<p>{{home_type}}</p>
+{% endif %}
+
+{% if zipcode %}
+<p>{{zipcode}}</p>
 {% endif %}
 
 {% endblock %}

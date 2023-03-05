@@ -17,7 +17,14 @@ def data_collection():
         bed=request.form["bed"]
         bath=request.form["bath"]
         sqft=request.form["sqft"]
-        return render_template('data_collection.html', bed=bed, bath=bath, sqft=sqft)
+        year_made=request.form["year_made"]
+        home_type=request.form["home_type"]
+        zipcode=request.form["zipcode"]
+        return render_template('data_collection.html', 
+                               bed=bed, bath=bath, sqft=sqft,
+                               year_made=year_made,
+                               home_type=home_type,
+                               zipcode=zipcode)
 
 @app.route('/visualization')
 def visualization():
