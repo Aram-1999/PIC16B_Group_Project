@@ -1,5 +1,10 @@
 from flask import Flask, render_template, g, request
+import pandas as pd
+import plotly
+from plotly import express as px
 import sqlite3
+import os
+import json
 
 app = Flask(__name__)
 
@@ -26,6 +31,29 @@ def data_collection():
                                home_type=home_type,
                                zipcode=zipcode)
 
-@app.route('/visualization')
+def mapbox(name):
+    """
+    Creates a mapbox of all the data points scraped for the name (city name) parameter
+    """
+    df = pd.read_csv(f"Datasets/{name}.csv")
+    fig = px.scatter_mapbox(df, 
+                            hover_data = ["address/city","price", 'bathrooms', 'bedrooms'],
+                            lat = "latitude",
+                            lon = "longitude", 
+                            zoom = 8,
+                            height = 300,
+                            mapbox_style="open-street-map")
+
+    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+    
+    return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+
+@app.route('/visualization', methods=['GET', 'POST'])
 def visualization():
-    return render_template('visualization.html')
+    if request.method == 'POST':
+        name = request.form.get("name")
+        graph = mapbox(name)
+        return render_template('visualization.html', name=name, graph = graph)
+    else:
+        return render_template('visualization.html')
