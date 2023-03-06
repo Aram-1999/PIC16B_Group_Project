@@ -1,66 +1,90 @@
-{% block header %}
-<h1>{% block title %}Data Collection{% endblock %}</h1>
-{% endblock %}
+<!doctype html>
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
+<html>
 
-{% block content %}
-<form method="post">
-    <label for="bed">Bedrooms:</label>
-    <input type="number" name="bed" id="bed">
-    <br><br>
+<body>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const name = urlParams.get('city');
+        const city = name.replace(/([a-z])([A-Z])/g, '$1 $2');
+        // Create a new h1 element
+        const heading = document.createElement("h1");
+        
+        // Set the text content of the heading
+        heading.textContent = city;
+        
+        // Add the heading to the body of the page
+        document.body.appendChild(heading);
+    </script>
+    <nav>
+        <h1>{% block title %}Data Collection{% endblock %}</h1>
+        <ul class="menu">
+            <li><a href="{{ url_for('data_collection') }}">Data Collection</a></li>
+            <li><a href="{{ url_for('visualization') }}">Visualization</a></li>
+        </ul>
+    </nav>
 
-    <label for="bath">Bathrooms:</label>
-    <input type="number" name="bath" id="bath">
-    <br><br>
+    {% block content %}
+    <form method="post">
+        <label for="bed">Bedrooms:</label>
+        <input type="number" name="bed" id="bed">
+        <br><br>
 
-    <label for="sqft">Square feet:</label>
-    <input type="number" name="sqft" id="sqft">
-    <br><br>
+        <label for="bath">Bathrooms:</label>
+        <input type="number" name="bath" id="bath">
+        <br><br>
 
-    <label for="year_made">Year made:</label>
-    <input type="number" name="year_made" id="year_made">
-    <br><br>
+        <label for="sqft">Square feet:</label>
+        <input type="number" name="sqft" id="sqft">
+        <br><br>
 
-    <label for="home_type">Home type:</label>
-    <select name="home_type" id="home_type">
-        <option value="apartment">Apartment</option>
-        <option value="condo">Condo</option>
-        <option value="lot">Lot</option>
-        <option value="multi_family">Multi Family Home</option>
-        <option value="single_family">Single Family Home</option>
-        <option vale="townhouse">Townhouse</option>
-    </select>
-    <br><br>
+        <label for="year_made">Year made:</label>
+        <input type="number" name="year_made" id="year_made">
+        <br><br>
 
-    <label for="zipcode">Zipcode:</label>
-    <input type="number" name="zipcode" id="zipcode">
-    <br><br>
+        <label for="home_type">Home type:</label>
+        <select name="home_type" id="home_type">
+            <option value="apartment">Apartment</option>
+            <option value="condo">Condo</option>
+            <option value="lot">Lot</option>
+            <option value="multi_family">Multi Family Home</option>
+            <option value="single_family">Single Family Home</option>
+            <option vale="townhouse">Townhouse</option>
+        </select>
+        <br><br>
 
-    <input type="submit" value="Submit">
-</form>
+        <label for="zipcode">Zipcode:</label>
+        <input type="number" name="zipcode" id="zipcode">
+        <br><br>
 
-{% if bed %}
-<p>You entered:</p>
-<p>{{bed}} bedrooms</p>
-{% endif %}
+        <input type="submit" value="Submit">
+    </form>
 
-{% if bath %}
-<p>{{bath}} bathrooms</p>
-{% endif %}
+    {% if bed %}
+    <p>You entered:</p>
+    <p>{{bed}} bedrooms</p>
+    {% endif %}
 
-{% if sqft %}
-<p>{{sqft}} sqft</p>
-{% endif %}
+    {% if bath %}
+    <p>{{bath}} bathrooms</p>
+    {% endif %}
 
-{% if year_made %}
-<p>made in {{year_made}}</p>
-{% endif %}
+    {% if sqft %}
+    <p>{{sqft}} sqft</p>
+    {% endif %}
 
-{% if home_type %}
-<p>{{home_type}}</p>
-{% endif %}
+    {% if year_made %}
+    <p>made in {{year_made}}</p>
+    {% endif %}
 
-{% if zipcode %}
-<p>{{zipcode}}</p>
-{% endif %}
+    {% if home_type %}
+    <p>{{home_type}}</p>
+    {% endif %}
 
-{% endblock %}
+    {% if zipcode %}
+    <p>{{zipcode}}</p>
+    {% endif %}
+
+    {% endblock %}
+</body>
+</html>

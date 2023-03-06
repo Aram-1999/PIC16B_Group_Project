@@ -41,10 +41,10 @@ def mapbox(name):
                             lat = "latitude",
                             lon = "longitude", 
                             zoom = 8,
-                            height = 300,
+                            height = 600,
                             mapbox_style="open-street-map")
 
-    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+    fig.update_layout(margin={"r":30,"t":10,"l":30,"b":0})
     
     return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
