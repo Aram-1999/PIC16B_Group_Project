@@ -3,6 +3,7 @@
 <html>
 
 <body>
+
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const name = urlParams.get('city');
@@ -19,8 +20,9 @@
     <nav>
         <h1>{% block title %}Data Collection{% endblock %}</h1>
         <ul class="menu">
-            <li><a href="{{ url_for('data_collection') }}">Data Collection</a></li>
-            <li><a href="{{ url_for('visualization') }}">Visualization</a></li>
+            <li><a href="{{ url_for('main') }}">Home</a></li>
+            <li><a href="{{ url_for('data_collection', city=city) }}">Data Collection</a></li>
+            <li><a href="{{ url_for('visualization', city=city) }}">Visualization</a></li>
         </ul>
     </nav>
 

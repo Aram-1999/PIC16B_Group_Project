@@ -6,35 +6,10 @@
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     </head>
     <body>
-        <h1>
-            Data Visualization
-        </h1>
-        <form method="POST" action="/visualization">
-            <label for="name">Choose the name of the city you want to create some visualizations:</label>
-            <select id="names" name="name"> 
-                <option value="Los Angeles">Los Angeles</option>
-                <option value="New York">New York</option>
-                <option value="Chicago">Chicago</option>
-            </select>
-            <br>
-		    <button type="submit">Submit</button>
-        </form>
-        <h1>{{ name }}</h1>
-        <p>
-            This is the distribution of the houses data in {{ name }}.
-        </p>
-        
-        {% if name %}
-            <div id="myPlot"></div>
-        {% else %}
-            <p>Welcome, regular user!</p>
-        {% endif %}
-        <div id="myPlot"></div>
-
         <script>
             const urlParams = new URLSearchParams(window.location.search);
-            const city = urlParams.get('city');
-
+            const name = urlParams.get('city');
+            const city = name.replace(/([a-z])([A-Z])/g, '$1 $2');
             // Create a new h1 element
             const heading = document.createElement("h1");
             
@@ -43,7 +18,23 @@
             
             // Add the heading to the body of the page
             document.body.appendChild(heading);
-          </script>
+        </script>
+        <nav>
+            <ul class="menu">
+                <li><a href="{{ url_for('main') }}">Home</a></li>
+                <li><a href="{{ url_for('data_collection', city=city) }}">Data Collection</a></li>
+                <li><a href="{{ url_for('visualization', city=city) }}">Visualization</a></li>
+            </ul>
+        </nav>
+        <h2>
+            Data Visualization
+        </h2>
+        <p>
+            This is the distribution of the houses data.
+        </p>
+        
+        
+        <div id="myPlot"></div>
     </body>
     <script>
         Plotly.newPlot("myPlot", {{ graph | safe }})
