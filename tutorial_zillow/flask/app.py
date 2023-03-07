@@ -57,3 +57,8 @@ def visualization():
         return render_template('visualization.html', name=name, graph = graph)
     else:
         return render_template('visualization.html')
+
+@app.route('/view_data', methods=['GET','POST'])
+def view_data():
+    data = pd.read_csv(f"Datasets/Los Angeles.csv")
+    return render_template('view_data.html', tables=[data.to_html()], titles=[''])

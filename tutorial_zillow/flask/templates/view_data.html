@@ -1,0 +1,41 @@
+<!doctype html>
+<!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
+<html lang="en"> 
+	<head>
+		<meta charset="utf-8">
+		<title>View the Data</title>
+	</head>
+
+	<body>
+		<header>
+			<h1>View the Data</h1>
+			<ul class="menu">
+            	<li><a href="{{ url_for('visualization') }}">Visualization</a></li>
+        	</ul>
+		</header>
+
+		<main>
+			<section>
+				<form method="POST" action="/view_data">
+            		<label for="name">Choose the name of the city you want to view the dataset for:</label>
+            		<select id="names" name="name"> 
+                		<option value="Los Angeles">Los Angeles</option>
+                		<option value="New York">New York</option>
+                		<option value="Chicago">Chicago</option>
+            		</select>
+            		<br><br>
+		    		<button type="submit">Submit</button>
+        		</form>
+			</section>
+
+			<section>
+				<h2>Currently displaying the Los Angeles data: </h2>
+					{% for table in tables %}
+                    	<h3>{{titles[loop.index]}}</h3>                            
+                    	{{ table|safe }}
+                    {% endfor %}	
+			</section>
+		</main>
+	</body>
+
+</html>

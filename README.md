@@ -9,14 +9,14 @@ https://apify.com/
 2) Search for the Zillow Real Estate API scraper
 3) Enter one of the following cities  
 
-    -"Chicago"  
-    -"Huston
+    -"Chicago" DONE 
+    -"Houston"
     -"Phoenix"
     -"San Diego"
     -"Dallas"
     -"Philadelphia"
     -San Antonio" 
-    -"San Jose"
+    -"San Jose" DONE
     -"New York" DONE
     -"Los Angeles" DONE
 	
