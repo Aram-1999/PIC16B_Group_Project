@@ -4,28 +4,15 @@
 
 <body>
 
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const name = urlParams.get('city');
-        const city = name.replace(/([a-z])([A-Z])/g, '$1 $2');
-        // Create a new h1 element
-        const heading = document.createElement("h1");
-        
-        // Set the text content of the heading
-        heading.textContent = city;
-        
-        // Add the heading to the body of the page
-        document.body.appendChild(heading);
-    </script>
+    <h1>{{ city }}</h1>
     <nav>
-        <h1>{% block title %}Data Collection{% endblock %}</h1>
         <ul class="menu">
             <li><a href="{{ url_for('main') }}">Home</a></li>
             <li><a href="{{ url_for('data_collection', city=city) }}">Data Collection</a></li>
             <li><a href="{{ url_for('visualization', city=city) }}">Visualization</a></li>
         </ul>
     </nav>
-
+    <h1>{% block title %}Data Collection{% endblock %}</h1>
     {% block content %}
     <form method="post">
         <label for="bed">Bedrooms:</label>

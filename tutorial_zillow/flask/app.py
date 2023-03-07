@@ -49,17 +49,27 @@ def mapbox(name):
     
     return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
+def histogram(name):
+
+    df = pd.read_csv(f"Datasets/{name}.csv")
+    fig = px.histogram(df, x="bedrooms")
+    
+    return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
 @app.route('/visualization', methods=['GET', 'POST'])
 def visualization():
     if request.method == 'POST':
         city = request.args.get('city')
-        graph = mapbox(city)
-        return render_template('visualization.html', city=city, graph = graph)
+        graph1 = mapbox(city)
+        graph2 = histogram(city)
+        return render_template('visualization.html', city=city, graph1 = graph1,
+                               graph2=graph2)
     else:
         city = request.args.get('city')
-        graph = mapbox(city)
-        return render_template('visualization.html', city=city, graph = graph)
+        graph1 = mapbox(city)
+        graph2 = histogram(city)
+        return render_template('visualization.html', city=city, graph1 = graph1,
+                               graph2=graph2)
 
 @app.route('/view_data', methods=['GET','POST'])
 def view_data():

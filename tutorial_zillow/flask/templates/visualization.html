@@ -6,19 +6,7 @@
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     </head>
     <body>
-        <script>
-            const urlParams = new URLSearchParams(window.location.search);
-            const name = urlParams.get('city');
-            const city = name.replace(/([a-z])([A-Z])/g, '$1 $2');
-            // Create a new h1 element
-            const heading = document.createElement("h1");
-            
-            // Set the text content of the heading
-            heading.textContent = city;
-            
-            // Add the heading to the body of the page
-            document.body.appendChild(heading);
-        </script>
+        <h1>{{ city }}</h1>
         <nav>
             <ul class="menu">
                 <li><a href="{{ url_for('main') }}">Home</a></li>
@@ -30,13 +18,34 @@
             Data Visualization
         </h2>
         <p>
-            This is the distribution of the houses data.
+            This is the distribution of the houses data in the city of {{city}}.
         </p>
         
         
-        <div id="myPlot"></div>
+        <div id="graph1"></div>
+        <br>
+        <h3>Customize the Visualization</h3>
+        <p1>
+            You can also customize the graph by applying the following filters:
+        </p1>
+        <form method="post">
+            <label for="feature">Features:</label>
+            <select name="features">
+                <option value="bedrooms"></option>
+                <option value="condo">Condo</option>
+                <option value="lot">Lot</option>
+                <option value="multi_family">Multi Family Home</option>
+                <option value="single_family">Single Family Home</option>
+                <option vale="townhouse">Townhouse</option>
+            </select>
+        </form>
+        <h2>Histograms</h2>
+        <div id="graph2"></div>
     </body>
     <script>
-        Plotly.newPlot("myPlot", {{ graph | safe }})
+        Plotly.newPlot("graph1", {{ graph1 | safe }})
+    </script>
+    <script>
+        Plotly.newPlot("graph2", {{ graph2 | safe }})
     </script>
 </html>
