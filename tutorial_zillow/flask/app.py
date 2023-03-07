@@ -32,11 +32,21 @@ def data_collection():
                                zipcode=zipcode,
                                city=city)
 
-def mapbox(name):
+def mapbox(name, **kwargs):
     """
     Creates a mapbox of all the data points scraped for the name (city name) parameter
     """
+
     df = pd.read_csv(f"Datasets/{name}.csv")
+
+    for key, value in kwargs.items():
+        if(key == "feature"):
+            feature = value
+        if(key == "number"):
+            num = value
+            num = int(num)
+            df = df[df[feature] == num]
+
     fig = px.scatter_mapbox(df, 
                             hover_data = ["address/city","price", 'bathrooms', 'bedrooms'],
                             lat = "latitude",
@@ -59,8 +69,10 @@ def histogram(name):
 @app.route('/visualization', methods=['GET', 'POST'])
 def visualization():
     if request.method == 'POST':
+        feature = request.form["features"]
+        number = request.form["number"]
         city = request.args.get('city')
-        graph1 = mapbox(city)
+        graph1 = mapbox(city, feature=feature, number=number)
         graph2 = histogram(city)
         return render_template('visualization.html', city=city, graph1 = graph1,
                                graph2=graph2)

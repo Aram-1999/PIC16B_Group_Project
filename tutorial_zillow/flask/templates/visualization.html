@@ -29,14 +29,15 @@
             You can also customize the graph by applying the following filters:
         </p1>
         <form method="post">
-            <label for="feature">Features:</label>
             <select name="features">
-                <option value="bedrooms"></option>
-                <option value="condo">Condo</option>
+                <option value="bedrooms">Bedrooms</option>
+                <option value="bathrooms">Bathrooms</option>
                 <option value="lot">Lot</option>
                 <option value="multi_family">Multi Family Home</option>
                 <option value="single_family">Single Family Home</option>
                 <option vale="townhouse">Townhouse</option>
+                <input type="text" name="number" placeholder="Number of">
+                <button type="submit" class="btn btn-primary">Apply</button>
             </select>
         </form>
         <h2>Histograms</h2>
