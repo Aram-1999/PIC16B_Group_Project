@@ -15,10 +15,10 @@ def main():
 @app.route('/data_collection', methods=['POST', 'GET'])
 def data_collection():
     if request.method == 'GET':
-        args = request.args
-        print(args)
-        return render_template('data_collection.html')
+        city = request.args.get('city')
+        return render_template('data_collection.html', city=city)
     else:
+        city = request.args.get('city')
         bed=request.form["bed"]
         bath=request.form["bath"]
         sqft=request.form["sqft"]
@@ -29,7 +29,8 @@ def data_collection():
                                bed=bed, bath=bath, sqft=sqft,
                                year_made=year_made,
                                home_type=home_type,
-                               zipcode=zipcode)
+                               zipcode=zipcode,
+                               city=city)
 
 def mapbox(name):
     """
@@ -52,11 +53,13 @@ def mapbox(name):
 @app.route('/visualization', methods=['GET', 'POST'])
 def visualization():
     if request.method == 'POST':
-        name = request.form.get("name")
-        graph = mapbox(name)
-        return render_template('visualization.html', name=name, graph = graph)
+        city = request.args.get('city')
+        graph = mapbox(city)
+        return render_template('visualization.html', city=city, graph = graph)
     else:
-        return render_template('visualization.html')
+        city = request.args.get('city')
+        graph = mapbox(city)
+        return render_template('visualization.html', city=city, graph = graph)
 
 @app.route('/view_data', methods=['GET','POST'])
 def view_data():
