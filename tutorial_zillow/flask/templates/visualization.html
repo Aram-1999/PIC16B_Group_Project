@@ -24,6 +24,7 @@
         
         <div id="graph1"></div>
         <br>
+        <div id="graph2"></div>
         <h3>Customize the Visualization</h3>
         <p1>
             You can also customize the graph by applying the following filters:
@@ -32,16 +33,25 @@
             <select name="features">
                 <option value="bedrooms">Bedrooms</option>
                 <option value="bathrooms">Bathrooms</option>
-                <option value="lot">Lot</option>
-                <option value="multi_family">Multi Family Home</option>
-                <option value="single_family">Single Family Home</option>
-                <option vale="townhouse">Townhouse</option>
                 <input type="text" name="number" placeholder="Number of">
-                <button type="submit" class="btn btn-primary">Apply</button>
             </select>
+            <br>
+            <select name="features_min_max">
+                <option value="price">Price</option>
+                <option value="livingArea">Living Area</option>
+                <option value="yearBuilt">Year Built</option>
+                <input type="text" name="minimum" placeholder="Minimum">
+                <input type="text" name="maximum" placeholder="Maximum">
+            </select>
+            <br>
+            <p1>Choose home type:</p1><br>
+            <input type="checkbox" name="apartment" value="APARTMENT">Apartment<br>
+            <input type="checkbox" name="condo" value="CONDO">Condo<br>
+            <input type="checkbox" name="lot" value="LOT">Lot</option><br>
+            <input type="checkbox" name="multi_family" value="MULTI_FAMILY">Multi Family Home<br>
+            <input type="checkbox" name="townhouse" value="TOWNHOUSE">Townhouse</option><br>
+            <button type="submit" class="btn btn-primary">Apply</button>
         </form>
-        <h2>Histograms</h2>
-        <div id="graph2"></div>
     </body>
     <script>
         Plotly.newPlot("graph1", {{ graph1 | safe }})

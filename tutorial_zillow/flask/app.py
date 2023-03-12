@@ -44,14 +44,64 @@ def mapbox(name, **kwargs):
             feature = value
         if(key == "number"):
             num = value
+            if num != '':
+                num = int(num)
+                df = df[df[feature] == num]
+        if(key == "feature_type"):
+            feature_type = value
+            if feature_type != []:
+                df = df[df["homeType"].isin(feature_type)]
+        if(key == "feature_min_max"):
+            feature_min_max = value
+        if(key == "min"):
+            minimum = value
+            if minimum != '':
+                minimum = int(minimum)
+                df = df[df[feature_min_max] >= minimum]
+        if(key == "max"):
+            maximum = value
+            print(maximum, feature_min_max)
+            if maximum != '':
+                maximum = int(maximum)
+                df = df[df[feature_min_max] <= maximum]
+
+    fig = px.scatter_mapbox(df, 
+                            hover_data = ["address/city","price", 'bathrooms', 'bedrooms',
+                                          'homeType'],
+                            lat = "latitude",
+                            lon = "longitude", 
+                            zoom = 8,
+                            height = 600,
+                            mapbox_style="open-street-map")
+
+    fig.update_layout(margin={"r":30,"t":10,"l":30,"b":0})
+    
+    return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+def density_mapbox(name, **kwargs):
+    """
+    Creates a mapbox of all the data points scraped for the name (city name) parameter
+    """
+
+    df = pd.read_csv(f"Datasets/{name}.csv")
+    sample_size = df.shape[0]
+
+    for key, value in kwargs.items():
+        if(key == "feature"):
+            feature = value
+        if(key == "number"):
+            num = value
             num = int(num)
             df = df[df[feature] == num]
 
-    fig = px.scatter_mapbox(df, 
+    radius = 6 * sample_size // df.shape[0]
+
+    fig = px.density_mapbox(df, 
                             hover_data = ["address/city","price", 'bathrooms', 'bedrooms'],
                             lat = "latitude",
                             lon = "longitude", 
                             zoom = 8,
+                            radius = radius,
                             height = 600,
                             mapbox_style="open-street-map")
 
@@ -69,17 +119,34 @@ def histogram(name):
 @app.route('/visualization', methods=['GET', 'POST'])
 def visualization():
     if request.method == 'POST':
-        feature = request.form["features"]
-        number = request.form["number"]
+        min = request.form.get("minimum")
+        max = request.form.get('maximum')
+        feature_min_max = request.form.get("features_min_max")
+        feature_type = []
+        if request.form.get("apartment"):
+            feature_type.append(request.form.get("apartment"))
+        if request.form.get("condo"):
+            feature_type.append(request.form.get("condo"))
+        if request.form.get("lot"):
+            feature_type.append(request.form.get("lot"))
+        if request.form.get("multi_family"):
+            feature_type.append(request.form.get("multi_family"))
+        if request.form.get("townhouse"):
+            feature_type.append(request.form.get("townhouse"))
+        feature = request.form.get("features")
+        number = request.form.get("number")
         city = request.args.get('city')
-        graph1 = mapbox(city, feature=feature, number=number)
-        graph2 = histogram(city)
+        graph1 = mapbox(city, feature=feature, number=number,
+                        feature_type=feature_type,
+                        feature_min_max=feature_min_max,
+                        min=min, max=max)
+        graph2 = density_mapbox(city)
         return render_template('visualization.html', city=city, graph1 = graph1,
                                graph2=graph2)
     else:
         city = request.args.get('city')
         graph1 = mapbox(city)
-        graph2 = histogram(city)
+        graph2 = density_mapbox(city)
         return render_template('visualization.html', city=city, graph1 = graph1,
                                graph2=graph2)
 
