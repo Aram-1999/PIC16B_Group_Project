@@ -83,7 +83,22 @@ def visualization():
         return render_template('visualization.html', city=city, graph1 = graph1,
                                graph2=graph2)
 
+def clean(df):
+    re_str = 'photos/'
+    clean_df = df.drop(df.columns[df.columns.str.contains(re_str)], axis=1)
+    clean_df = clean_df.drop(df.columns[df.columns.str.contains("address/community")], axis=1)
+    return clean_df
+
 @app.route('/view_data', methods=['GET','POST'])
 def view_data():
-    data = pd.read_csv(f"Datasets/Los Angeles.csv")
-    return render_template('view_data.html', tables=[data.to_html()], titles=[''])
+    name = "Los Angeles" # default
+    if request.method == 'POST':
+        name = request.form["name"]
+        data = pd.read_csv(f"Datasets/{name}.csv")
+        clean_data = clean(data)
+        pd.set_option('display.max_colwidth', 10)
+        return render_template('view_data.html', tables=[clean_data.to_html()], titles=[''], city=name)
+    else: 
+        data = pd.read_csv("Datasets/Los Angeles.csv") # default
+        clean_data = clean(data)
+        return render_template('view_data.html', tables=[clean_data.to_html()], titles=[''], city=name)
