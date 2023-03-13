@@ -39,12 +39,8 @@ def data_collection():
         zipcode=request.form["zipcode"]
         if zipcode:
             d['zipcode'] = zipcode
-        return render_template('data_collection.html', **d)
-                            #    bed=bed, bath=bath, sqft=sqft,
-                            #    year_made=year_made,
-                            #    home_type=home_type,
-                            #    zipcode=zipcode,
-                            #    city=city)
+        return render_template('data_collection.html', city=city, **d)
+
 
 def mapbox(name, **kwargs):
     """
@@ -186,6 +182,9 @@ def view_data():
     
 
 def getStats(name):
+    '''
+    Returns the modes/means of the data from the given city name
+    '''
     df = pd.read_csv(f"Datasets/{name}.csv")
 
     modes = df[['address/zipcode', 'homeType', 'bathrooms', 'bedrooms', 'yearBuilt']].mode()
