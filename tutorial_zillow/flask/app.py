@@ -14,23 +14,37 @@ def main():
 
 @app.route('/data_collection', methods=['POST', 'GET'])
 def data_collection():
+
     if request.method == 'GET':
         city = request.args.get('city')
         return render_template('data_collection.html', city=city)
     else:
         city = request.args.get('city')
+        d = getStats(city)
         bed=request.form["bed"]
+        if bed:
+            d['bed'] = bed
         bath=request.form["bath"]
+        if bath:
+            d['bath'] = bath
         sqft=request.form["sqft"]
+        if sqft:
+            d['sqft'] = sqft
         year_made=request.form["year_made"]
+        if year_made:
+            d['year_made'] = year_made
         home_type=request.form["home_type"]
+        if home_type:
+            d['home_type'] = home_type
         zipcode=request.form["zipcode"]
-        return render_template('data_collection.html', 
-                               bed=bed, bath=bath, sqft=sqft,
-                               year_made=year_made,
-                               home_type=home_type,
-                               zipcode=zipcode,
-                               city=city)
+        if zipcode:
+            d['zipcode'] = zipcode
+        return render_template('data_collection.html', **d)
+                            #    bed=bed, bath=bath, sqft=sqft,
+                            #    year_made=year_made,
+                            #    home_type=home_type,
+                            #    zipcode=zipcode,
+                            #    city=city)
 
 def mapbox(name, **kwargs):
     """
@@ -169,3 +183,24 @@ def view_data():
         data = pd.read_csv("Datasets/Los Angeles.csv") # default
         clean_data = clean(data)
         return render_template('view_data.html', tables=[clean_data.to_html()], titles=[''], city=name)
+    
+
+def getStats(name):
+    df = pd.read_csv(f"Datasets/{name}.csv")
+
+    modes = df[['address/zipcode', 'homeType', 'bathrooms', 'bedrooms', 'yearBuilt']].mode()
+    mode_zipcode = modes.iloc[0]['address/zipcode']
+    mode_home_type = modes.iloc[0]['homeType']
+    mode_bath = modes.iloc[0]['bathrooms']
+    mode_bed = modes.iloc[0]['bedrooms']
+    mode_year = modes.iloc[0]['yearBuilt']
+
+    return {
+        "zipcode": int(mode_zipcode),
+        "home_type": mode_home_type,
+        "bath": int(mode_bath),
+        "bed": int(mode_bed),
+        "year_made": int(mode_year),
+        "sqft": 20000   # placeholder
+    }
+
