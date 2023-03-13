@@ -5,8 +5,13 @@ from plotly import express as px
 import sqlite3
 import os
 import json
+import numpy as np
+from scipy import stats
+from flask import Flask, session
+import plotly.express.colors
 
 app = Flask(__name__)
+app.secret_key = "super secret key"
 
 @app.route('/')
 def main():
@@ -20,8 +25,11 @@ def data_collection():
     else:
         city = request.args.get('city')
         bed=request.form["bed"]
+        session['bed_info'] = bed
         bath=request.form["bath"]
+        session['bath_info'] = bath
         sqft=request.form["sqft"]
+        session['sqft_info'] = sqft
         year_made=request.form["year_made"]
         home_type=request.form["home_type"]
         zipcode=request.form["zipcode"]
@@ -109,15 +117,79 @@ def density_mapbox(name, **kwargs):
     
     return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-def histogram(name):
-
+def cleaning(name):
     df = pd.read_csv(f"Datasets/{name}.csv")
-    fig = px.histogram(df, x="bedrooms")
-    
+    df = df[(np.abs(stats.zscore(df["price"])) <3)]
+    df["bathrooms"] = df["bathrooms"].round()
+    df = df[df["bathrooms"] < 30]
+    df = df[df["bedrooms"] < 30]
+    df = df[df["livingArea"] < 25000]
+    df["livingArea"] = round(df["livingArea"] / 500.0) *500
+    return df
+
+def histogram_count(name, feature, user_info, color):
+    df = cleaning(name)
+    highest_value = 450
+    fig = px.histogram(df, x=feature, width = 500, color_discrete_sequence=color)
+    fig.add_shape(type="line",x0=user_info, y0=0, x1=user_info, y1=highest_value,line=dict(color="red", width=3, dash="dash"))
+    fig.add_annotation(x=user_info, y=highest_value, ax=0, ay=-40,text="Your Data",arrowhead=1, arrowwidth=3, showarrow=True)
+    fig.update_traces(marker_line_color="black", marker_line_width=1, opacity=0.7)
+    if feature == "livingArea":
+        fig.update_layout(title={"text": "Square Footage ", "x": 0.5}, yaxis_title="Count")
+    else: 
+        fig.update_layout(title={"text": "Number of " + feature, "x": 0.5}, yaxis_title="Count")
     return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+
+
+def histogram_price(name, feature, user_info, color):
+    df = cleaning(name)
+    median_price = df[[feature,"price"]].groupby(feature).median().round(0)
+    highest_value = int(median_price.max())
+    fig = px.histogram(median_price, width =500, x=median_price.index, y="price", nbins =30, color_discrete_sequence=color)
+    fig.add_shape(type="line", x0=user_info, y0=0, x1=user_info, y1=highest_value, line=dict(color="red", width=3, dash="dash"))
+    fig.add_annotation(x=user_info, y=highest_value, ax=0, ay=-40,text="Your Data",arrowhead=1, arrowwidth=3, showarrow=True)
+    fig.update_traces(marker_line_color="black", marker_line_width=1, opacity=0.7)
+    if feature == "livingArea":
+        fig.update_layout(title={"text": "Median Price of Homes vs Square Footage" , "x": 0.5}, yaxis_title="Price")
+    else:
+        fig.update_layout(title={"text": "Median Price of Homes vs " + feature, "x": 0.5}, yaxis_title="Price")
+    return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+
+def scatterplot_count(name, feature1, feature2, user_info):
+    df = cleaning(name)
+    offset = 1
+    scatter_1 = df.groupby([feature1, feature2]).size().reset_index().rename(columns={0:'count'})
+    fig = px.scatter(scatter_1, x = feature1, y = feature2, color = "count", color_continuous_scale=px.colors.sequential.Plotly3_r, range_color = [1,100], width = 500)
+    if feature2 == "livingArea":
+        offset = 550
+        fig.update_layout(title={"text": "Amount of " + feature1 + " vs Square Footage", "x": 0.5})
+        fig.add_shape(type="circle",x0=int(user_info[0])-1, x1=int(user_info[0])+1, y0 = int(user_info[1])-offset, y1 = int(user_info[1])+offset)
+    else: 
+        fig.add_shape(type="circle",x0=int(user_info[0])-1, x1=int(user_info[0])+1, y0 = int(user_info[1])-offset, y1 = int(user_info[1])+offset)
+        fig.update_layout(title={"text": "Amount of " + feature1 + " vs Amount of " + feature2, "x": 0.5})
+    return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+
+@app.route('/morevisualization')
+def morevisualization():
+    
+    graph1 = histogram_count(name =session.get('city_info'), feature = "bedrooms", user_info = session.get('bed_info'), color = ['indianred'])
+    graph2 = histogram_count(name =session.get('city_info'), feature = "bathrooms", user_info =  session.get('bath_info'), color = ["#4083f7"])
+    graph3 = histogram_count(name =session.get('city_info'), feature = "livingArea", user_info =  session.get('sqft_info'), color = ['#42c947'])
+    graph4 = histogram_price(name =session.get('city_info'), feature = "bedrooms", user_info =  session.get('bed_info'), color = ["indianred"])
+    graph5 = histogram_price(name =session.get('city_info'), feature = "bathrooms", user_info =  session.get('bath_info'), color = ["#4083f7"])
+    graph6 = histogram_price(name =session.get('city_info'), feature = "livingArea", user_info =  session.get('sqft_info'), color = ['#42c947'])
+    graph7 = scatterplot_count(name=session.get('city_info'), feature1 = "bedrooms", feature2 = "bathrooms", user_info = [session.get("bed_info"), session.get("bath_info")])
+    graph8 = scatterplot_count(name=session.get('city_info'), feature1 = "bedrooms", feature2 = "livingArea", user_info = [session.get("bed_info"), session.get("sqft_info")])
+    graph9 = scatterplot_count(name=session.get('city_info'), feature1 = "bathrooms", feature2 = "livingArea", user_info = [session.get("bath_info"), session.get("sqft_info")])
+    return render_template('morevisualization.html', city = session.get('city_info'), graph1 = graph1, graph2 = graph2, graph3 = graph3, graph4=graph4, graph5=graph5, graph6=graph6, graph7=graph7, graph8=graph8, graph9=graph9)
 
 @app.route('/visualization', methods=['GET', 'POST'])
 def visualization():
+    city = request.args.get('city')
+    session['city_info'] = city
     if request.method == 'POST':
         min = request.form.get("minimum")
         max = request.form.get('maximum')
@@ -158,14 +230,14 @@ def clean(df):
 
 @app.route('/view_data', methods=['GET','POST'])
 def view_data():
-    name = "Los Angeles" # default
+    city = session.get('city_info')
     if request.method == 'POST':
-        name = request.form["name"]
-        data = pd.read_csv(f"Datasets/{name}.csv")
+        city = request.form["name"]
+        data = pd.read_csv(f"Datasets/{city}.csv")
         clean_data = clean(data)
         pd.set_option('display.max_colwidth', 10)
-        return render_template('view_data.html', tables=[clean_data.to_html()], titles=[''], city=name)
+        return render_template('view_data.html', tables=[clean_data.to_html()], titles=[''], city=city)
     else: 
-        data = pd.read_csv("Datasets/Los Angeles.csv") # default
+        data = pd.read_csv(f"Datasets/{city}.csv") # default
         clean_data = clean(data)
-        return render_template('view_data.html', tables=[clean_data.to_html()], titles=[''], city=name)
+        return render_template('view_data.html', tables=[clean_data.to_html()], titles=[''], city=city)

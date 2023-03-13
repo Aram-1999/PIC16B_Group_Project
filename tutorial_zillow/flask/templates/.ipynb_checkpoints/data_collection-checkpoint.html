@@ -1,57 +1,51 @@
 <!doctype html>
-<!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 <html>
-    <head>
-        <style>
-            h1.webpage_title {text-align: center;
-                font-family: "Arial";
-                font-size: 40px;
-            }
-            span.fade-in::before{
-                font-family: "MV Boli";
-                content: "Los Angeles";
-                font-size: 45px;
-                animation: fadeInAnimation ease 5s;
-                animation-delay: 2s;
-                animation-duration: 30s;
-                animation-fill-mode: forwards;
-                animation-iteration-count: infinite;
-            }
-            @keyframes fadeInAnimation {
-            5.5% {content: "New York"}
-            16.5% { content: "Chicago"}    
-            27.5% {content: "Huston"}
-            38.5% {content: "Phoenix"}
-            49.5% {content: "San Diego"}
-            60.5% {content: "Dallas"}
-            71.5% {content: "Philadelphia"}
-            82.5% {content: "San Antonio"}  
-            93.5% {content: "San Jose"}
-            }
-            img{
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
-                width: 50%;
-            }
-            
-        </style>
-    </head>
-    <body>
-    <title>{% block title %} House Prices{% endblock %} - </title>
-    <nav>
-        <h1 class = "webpage_title">Understanding the Housing Market in  <span class="fade-in">  </span>  </h1> 
-    </nav>
 
-    <ul>
-        <li><a href="{{ url_for('data_collection') }}">Data Collection</a></li>
-        <li><a href="{{ url_for('visualization') }}">Visualization</a></li>
-    </ul>     
-        
-    
-    <section class="content">
-    <header>
-        {% block header %}{% endblock %}
-    </header>
-    {% block content %}{% endblock %}
-</section>
+<h1 class="collection">{{ city }}</h1>
+<nav class="collection">
+    <ul class="menu collection">
+        <li class="collection"><a href="{{ url_for('main') }}">Home</a></li>
+        <li class="collection"><a href="{{ url_for('visualization', city=city) }}">Geographic Visualization</a></li>
+        <li class="collection"><a href="{{ url_for('data_collection', city=city) }}">Data Collection</a></li>
+        <li class="collection"><a href="{{ url_for('morevisualization', city=city) }}">Data Visualization</a></li>
+        <li class="collection"><a href="{{ url_for('view_data', city=city) }}">View Data</a></li>
+    </ul>
+</nav>
+<h1 class="collection">{% block title %}Data Collection{% endblock %}</h1>
+{% block content %}
+<form class="collection" method="post">
+    <label for="bed" class="collection">Bedrooms:</label>
+    <input type="number" name="bed" id="bed" class="collection">
+    <br><br>
+
+    <label for="bath" class="collection">Bathrooms:</label>
+    <input type="number" name="bath" id="bath" class="collection">
+    <br><br>
+
+    <label for="sqft" class="collection">Square feet:</label>
+    <input type="number" name="sqft" id="sqft" class="collection">
+    <br><br>
+
+    <label for="year_made" class="collection">Year made:</label>
+    <input type="number" name="year_made" id="year_made" class="collection">
+    <br><br>
+
+    <label for="home_type" class="collection">Home type:</label>
+    <select name="home_type" id="home_type" class="collection">
+        <option value="apartment">Apartment</option>
+        <option value="condo">Condo</option>
+        <option value="lot">Lot</option>
+        <option value="multi_family">Multi Family Home</option>
+        <option value="single_family">Single Family Home</option>
+        <option vale="townhouse">Townhouse</option>
+    </select>
+    <br><br>
+
+    <label for="zipcode" class="collection">Zipcode:</label>
+    <input type="number" name="zipcode" id="zipcode" class="collection">
+    <br><br>
+
+    <input type="submit" value="Submit" class="collection">
+</form>
+{% endblock %}

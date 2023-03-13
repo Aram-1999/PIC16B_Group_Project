@@ -1,9 +1,9 @@
-body {
-    background-color: #fffaf1
+body.collection {
+    background-color: #fffaf1;
 }
 
 /* Style the header */
-h1 {
+h1.collection {
     font-size: 32px;
     font-weight: bold;
     text-align: center;
@@ -11,14 +11,14 @@ h1 {
     margin: 20px 0;
 }
   
-  /* Style the navigation menu */
-nav {
+/* Style the navigation menu */
+nav.collection {
     background-color: #477a49;
     color: white;
     padding: 10px;
 }
   
-.menu {
+.menu.collection {
     display: flex;
     justify-content: center;
     list-style: none;
@@ -26,34 +26,34 @@ nav {
     padding: 0;
 }
   
-.menu li {
+.menu.collection li {
     margin: 0 20px;
 }
   
-.menu a {
+.menu.collection a {
     color: white;
     text-decoration: none;
 }
   
-.menu a:hover {
+.menu.collection a:hover {
     text-decoration: underline;
 }
   
-  /* Style the form */
-form {
+/* Style the form */
+form.collection {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
   
-label {
+label.collection {
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 10px;
 }
   
-input[type="number"],
-select {
+input[type="number"].collection,
+select.collection {
     padding: 5px;
     margin-bottom: 20px;
     font-size: 16px;
@@ -62,7 +62,7 @@ select {
     background-color: #f8f8f8;
 }
   
-input[type="submit"] {
+input[type="submit"].collection {
     background-color: #477a49;
     color: white;
     border: none;
@@ -72,14 +72,17 @@ input[type="submit"] {
     cursor: pointer;
 }
   
-input[type="submit"]:hover {
+input[type="submit"].collection:hover {
     background-color: #1f5021;
 }
   
 /* Style the entered data */
-p {
+p.collection {
     font-size: 18px;
-    margin: 10px auto; /* Set the horizontal margin to auto to center the paragraph */
+    margin: 10px auto;
     color: #333;
-    text-align: center; /* Center the text within the paragraph */
+    text-align: center;
 }
+
+
+

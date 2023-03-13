@@ -1,4 +1,5 @@
 <!doctype html>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 <html lang="en">
 
   <head>
@@ -57,11 +58,18 @@
   </head>
 
   <body>
+              <h1 class = collection>{{ city }}</h1>
+        <nav class="collection">
+            <ul class="menu collection">
+                <li class="collection"><a href="{{ url_for('main') }}">Home</a></li>
+                <li class="collection"><a href="{{ url_for('visualization', city=city) }}">Geographic Visualization</a></li>
+                <li class="collection"><a href="{{ url_for('data_collection', city=city) }}">Data Collection</a></li>
+                <li class="collection"><a href="{{ url_for('morevisualization', city=city) }}">Data Visualization</a></li>
+                <li class="collection"><a href="{{ url_for('view_data', city=city) }}">View Data</a></li>
+            </ul>
+        </nav>
     <header>
       <h1>View the Data</h1>
-      <ul class="menu">
-        <li><a href="{{ url_for('visualization', city=city) }}">Visualization</a></li>
-      </ul>
     </header>
 
     <main>

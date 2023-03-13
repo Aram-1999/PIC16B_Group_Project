@@ -1,25 +1,24 @@
 <!doctype html>
-<!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 <html>
     <head>
         <title>Data Visualization</title>
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     </head>
     <body>
-        <h1>{{ city }}</h1>
-        <nav>
-            <ul class="menu">
-                <li><a href="{{ url_for('main') }}">Home</a></li>
-                <li><a href="{{ url_for('data_collection', city=city) }}">Data Collection</a></li>
-                <li><a href="{{ url_for('visualization', city=city) }}">Visualization</a></li>
+        <h1 class = collection>{{ city }}</h1>
+        <nav class="collection">
+            <ul class="menu collection">
+                <li class="collection"><a href="{{ url_for('main') }}">Home</a></li>
+                <li class="collection"><a href="{{ url_for('visualization', city=city) }}">Geographic Visualization</a></li>
+                <li class="collection"><a href="{{ url_for('data_collection', city=city) }}">Data Collection</a></li>
+                <li class="collection"><a href="{{ url_for('morevisualization', city=city) }}">Data Visualization</a></li>
+                <li class="collection"><a href="{{ url_for('view_data', city=city) }}">View Data</a></li>
             </ul>
         </nav>
-        <h2>
-            Data Visualization
-        </h2>
-        <p>
-            This is the distribution of the houses data in the city of {{city}}.
-        </p>
+        <h1 class = "collection">
+            Geographic Visualization
+        </h1>
         
         
         <div id="graph1"></div>
