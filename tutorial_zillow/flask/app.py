@@ -173,16 +173,24 @@ def scatterplot_count(name, feature1, feature2, user_info):
 
 @app.route('/morevisualization')
 def morevisualization():
+
+    # set default values if user didn't submit anything
+    city = session.get('city_info')
+    default = getStats(city)
+    bed = session.get('bed_info') if session.get('bed_info') else default['bed']
+    bath = session.get('bath_info') if session.get('bath_info') else default['bath']
+    sqft = session.get('sqft_info') if session.get('sqft_info') else default['sqft']
     
-    graph1 = histogram_count(name =session.get('city_info'), feature = "bedrooms", user_info = session.get('bed_info'), color = ['indianred'])
-    graph2 = histogram_count(name =session.get('city_info'), feature = "bathrooms", user_info =  session.get('bath_info'), color = ["#4083f7"])
-    graph3 = histogram_count(name =session.get('city_info'), feature = "livingArea", user_info =  session.get('sqft_info'), color = ['#42c947'])
-    graph4 = histogram_price(name =session.get('city_info'), feature = "bedrooms", user_info =  session.get('bed_info'), color = ["indianred"])
-    graph5 = histogram_price(name =session.get('city_info'), feature = "bathrooms", user_info =  session.get('bath_info'), color = ["#4083f7"])
-    graph6 = histogram_price(name =session.get('city_info'), feature = "livingArea", user_info =  session.get('sqft_info'), color = ['#42c947'])
-    graph7 = scatterplot_count(name=session.get('city_info'), feature1 = "bedrooms", feature2 = "bathrooms", user_info = [session.get("bed_info"), session.get("bath_info")])
-    graph8 = scatterplot_count(name=session.get('city_info'), feature1 = "bedrooms", feature2 = "livingArea", user_info = [session.get("bed_info"), session.get("sqft_info")])
-    graph9 = scatterplot_count(name=session.get('city_info'), feature1 = "bathrooms", feature2 = "livingArea", user_info = [session.get("bath_info"), session.get("sqft_info")])
+    graph1 = histogram_count(name =session.get('city_info'), feature = "bedrooms", user_info = bed, color = ['indianred'])
+    graph2 = histogram_count(name =session.get('city_info'), feature = "bathrooms", user_info =  bath, color = ["#4083f7"])
+    graph3 = histogram_count(name =session.get('city_info'), feature = "livingArea", user_info =  sqft, color = ['#42c947'])
+    graph4 = histogram_price(name =session.get('city_info'), feature = "bedrooms", user_info =  bed, color = ["indianred"])
+    graph5 = histogram_price(name =session.get('city_info'), feature = "bathrooms", user_info =  bath, color = ["#4083f7"])
+    graph6 = histogram_price(name =session.get('city_info'), feature = "livingArea", user_info =  sqft, color = ['#42c947'])
+    graph7 = scatterplot_count(name=session.get('city_info'), feature1 = "bedrooms", feature2 = "bathrooms", user_info = [bed, bath])
+    graph8 = scatterplot_count(name=session.get('city_info'), feature1 = "bedrooms", feature2 = "livingArea", user_info = [bed, sqft])
+    graph9 = scatterplot_count(name=session.get('city_info'), feature1 = "bathrooms", feature2 = "livingArea", user_info = [bath, sqft])
+
     return render_template('morevisualization.html', city = session.get('city_info'), graph1 = graph1, graph2 = graph2, graph3 = graph3, graph4=graph4, graph5=graph5, graph6=graph6, graph7=graph7, graph8=graph8, graph9=graph9)
 
 @app.route('/visualization', methods=['GET', 'POST'])
@@ -240,3 +248,26 @@ def view_data():
         data = pd.read_csv(f"Datasets/{city}.csv") # default
         clean_data = clean(data)
         return render_template('view_data.html', tables=[clean_data.to_html()], titles=[''], city=city)
+    
+def getStats(name):
+    '''
+    Returns statistics for a city to use as default values
+    '''
+
+    df = pd.read_csv(f"Datasets/{name}.csv")
+    modes = df[['address/zipcode', 'homeType', 'bathrooms', 'bedrooms', 'yearBuilt', 'livingArea']].mode()
+    mode_zipcode = modes.iloc[0]['address/zipcode']
+    mode_home_type = modes.iloc[0]['homeType']
+    mode_bath = modes.iloc[0]['bathrooms']
+    mode_bed = modes.iloc[0]['bedrooms']
+    mode_year = modes.iloc[0]['yearBuilt']
+    mode_area = modes.iloc[0]['livingArea']
+    # sqft = df[['livingArea']].mean().iloc[0]
+    return {
+        "zipcode": int(mode_zipcode),
+        "home_type": mode_home_type,
+        "bath": int(mode_bath),
+        "bed": int(mode_bed),
+        "year_made": int(mode_year),
+        "sqft": int(mode_area)  
+    }
