@@ -12,11 +12,25 @@
         <li class="collection"><a href="{{ url_for('view_data', city=city) }}">View Data</a></li>
     </ul>
 </nav>
-<h1 class="collection">{% block title %}Data Collection{% endblock %}</h1>
+<h1 class="collection">{% block title %}{% if prediction%}
+    Data Prediction
+    {% else %}
+    Data Collection
+    {% endif %}
+    {% endblock %}</h1>
 {% block content %}
 {% if prediction %}
     <p style ="font-size: 20px; text-align: center;">
-        The predicted price for this property is {{ price }}</p>
+        The predicted price for this property is {{ price }}
+        with the following feature values:</p>
+    <p style ="font-size: 20px; text-align: center;">bedrooms - {{bed}},</p>
+    <p style ="font-size: 20px; text-align: center;">bathrooms - {{bath}},</p>
+    <p style ="font-size: 20px; text-align: center;">sqft - {{sqft}},</p>
+    <p style ="font-size: 20px; text-align: center;">year made - {{year_made}},</p>
+    <p style ="font-size: 20px; text-align: center;">home type - {{home_type}},</p>
+    <p style ="font-size: 20px; text-align: center;">zip code - {{zipcode}}</p>
+
+    <h1 style="text-align: center;">Data Collection</h1>
 {% endif %}
 <form class="collection" method="post">
     <label for="bed" class="collection">Bedrooms:</label>

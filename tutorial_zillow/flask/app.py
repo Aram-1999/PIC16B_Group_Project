@@ -34,10 +34,12 @@ def data_collection():
         sqft=request.form["sqft"]
         session['sqft_info'] = sqft
         year_made=request.form["year_made"]
+        home_type = request.form['home_type']
         zipcode = str(request.form["zipcode"])
         
         with open('Model/model1.pkl', 'rb') as f:
             model = pickle.load(f)
+        
         
         price = model.predict(pd.DataFrame({
             'address/zipcode': [zipcode],
@@ -47,12 +49,11 @@ def data_collection():
 
         return render_template('data_collection.html', city = city,
                                prediction = True,
-                               price = int(price[0]))
-                            #    bed=bed, bath=bath, sqft=sqft,
-                            #    year_made=year_made,
-                            #    home_type=home_type,
-                            #    zipcode=zipcode,
-                            #    city=city)
+                               price = int(price[0]),
+                               bed=bed, bath=bath, sqft=sqft,
+                               year_made=year_made,
+                               home_type=home_type,
+                               zipcode=zipcode)
 
 def mapbox(name, **kwargs):
     """
