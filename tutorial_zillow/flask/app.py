@@ -20,12 +20,17 @@ def main():
 
 @app.route('/data_collection', methods=['POST', 'GET'])
 def data_collection():
+    '''
+    Renders template for data collection
+    Uses model to predict house price from user input
+    '''
 
     if request.method == 'GET':
         city = request.args.get('city')
         return render_template('data_collection.html', city=city,
                                prediction = False)
     else:
+        # if user submits form
         city = request.args.get('city')
         bed=request.form["bed"]
         session['bed_info'] = bed
@@ -216,7 +221,9 @@ def scatterplot_count(name, feature1, feature2, user_info):
 
 @app.route('/morevisualization')
 def morevisualization():
-
+    '''
+    renders template for data visualization page
+    '''
     # set default values if user didn't submit anything
     city = session.get('city_info')
     default = getStats(city)
@@ -224,12 +231,15 @@ def morevisualization():
     bath = session.get('bath_info') if session.get('bath_info') else default['bath']
     sqft = session.get('sqft_info') if session.get('sqft_info') else default['sqft']
     
+    # create histograms
     graph1 = histogram_count(name =session.get('city_info'), feature = "bedrooms", user_info = bed, color = ['indianred'])
     graph2 = histogram_count(name =session.get('city_info'), feature = "bathrooms", user_info =  bath, color = ["#4083f7"])
     graph3 = histogram_count(name =session.get('city_info'), feature = "livingArea", user_info =  sqft, color = ['#42c947'])
     graph4 = histogram_price(name =session.get('city_info'), feature = "bedrooms", user_info =  bed, color = ["indianred"])
     graph5 = histogram_price(name =session.get('city_info'), feature = "bathrooms", user_info =  bath, color = ["#4083f7"])
     graph6 = histogram_price(name =session.get('city_info'), feature = "livingArea", user_info =  sqft, color = ['#42c947'])
+    
+    # create scatterplots
     graph7 = scatterplot_count(name=session.get('city_info'), feature1 = "bedrooms", feature2 = "bathrooms", user_info = [bed, bath])
     graph8 = scatterplot_count(name=session.get('city_info'), feature1 = "bedrooms", feature2 = "livingArea", user_info = [bed, sqft])
     graph9 = scatterplot_count(name=session.get('city_info'), feature1 = "bathrooms", feature2 = "livingArea", user_info = [bath, sqft])
@@ -299,10 +309,13 @@ def view_data():
     
 def getStats(name):
     '''
-    Returns statistics for a city to use as default values
+    Returns dictionary of statistics for a city to use as default values
     '''
 
+    # get data frame for given city
     df = pd.read_csv(f"Datasets/{name}.csv")
+
+    # get mode values
     modes = df[['address/zipcode', 'homeType', 'bathrooms', 'bedrooms', 'yearBuilt', 'livingArea']].mode()
     mode_zipcode = modes.iloc[0]['address/zipcode']
     mode_home_type = modes.iloc[0]['homeType']
@@ -310,7 +323,8 @@ def getStats(name):
     mode_bed = modes.iloc[0]['bedrooms']
     mode_year = modes.iloc[0]['yearBuilt']
     mode_area = modes.iloc[0]['livingArea']
-    # sqft = df[['livingArea']].mean().iloc[0]
+
+    # return dictionary
     return {
         "zipcode": int(mode_zipcode),
         "home_type": mode_home_type,
