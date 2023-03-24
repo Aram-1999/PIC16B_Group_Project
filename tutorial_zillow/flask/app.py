@@ -288,13 +288,25 @@ def visualization():
                                graph2=graph2)
 
 def clean(df):
-    re_str = 'photos/'
+    '''
+    This function will clean each city's dataset
+    Args:
+    df: the dataset of a city
+    Return:
+    cleaned dataset that no longer contains columns that are not needed (such as photos)
+    '''
+    re_str = 'photos/' # use this string to drop all 'photos' columns
     clean_df = df.drop(df.columns[df.columns.str.contains(re_str)], axis=1)
-    clean_df = clean_df.drop(df.columns[df.columns.str.contains("address/community")], axis=1)
+    clean_df = clean_df.drop(df.columns[df.columns.str.contains("address/community")], axis=1) # drop empty column
     return clean_df
 
 @app.route('/view_data', methods=['GET','POST'])
 def view_data():
+    '''
+    This function will display the dataset of a selected city
+    Return:
+    an html-rendered table that contains all data of a particular city
+    '''
     city = session.get('city_info')
     if request.method == 'POST':
         city = request.form["name"]
