@@ -9,6 +9,7 @@ import numpy as np
 from scipy import stats
 from flask import Flask, session
 import plotly.express.colors
+import pickle
 
 app = Flask(__name__)
 app.secret_key = "super secret key"
@@ -22,7 +23,8 @@ def data_collection():
 
     if request.method == 'GET':
         city = request.args.get('city')
-        return render_template('data_collection.html', city=city)
+        return render_template('data_collection.html', city=city,
+                               prediction = False)
     else:
         city = request.args.get('city')
         bed=request.form["bed"]
@@ -32,7 +34,20 @@ def data_collection():
         sqft=request.form["sqft"]
         session['sqft_info'] = sqft
         year_made=request.form["year_made"]
-        return render_template('data_collection.html', city = city)
+        zipcode = str(request.form["zipcode"])
+        
+        with open('Model/model1.pkl', 'rb') as f:
+            model = pickle.load(f)
+        
+        price = model.predict(pd.DataFrame({
+            'address/zipcode': [zipcode],
+            'bathrooms': [bed],
+            'bedrooms': [bath]
+        }))
+
+        return render_template('data_collection.html', city = city,
+                               prediction = True,
+                               price = int(price[0]))
                             #    bed=bed, bath=bath, sqft=sqft,
                             #    year_made=year_made,
                             #    home_type=home_type,
