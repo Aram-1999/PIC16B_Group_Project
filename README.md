@@ -6,7 +6,7 @@
 The goal of this project was for users to understand the distribution of homes for sale on Zillow. Typically, prospective home buyers and sellers go to Zillow to find similar homes in order to gain an understanding of a given house's value. Our project would give users a better understanding as it would explain the entire housing market for a given city. This includes geographic visualizations, histograms and scatterplots, and a predictive model that works with user data. We decided to limit our focus to the top ten major cities in the United States: Los Angeles, San Antonio, Phileadelphia, San Diego, Houston, Dallas, Phoenix, New York, Chicago, and San Jose. Using the api, we were able to obtain information on 1500 homes for each city with 30 features.  
 
 ## Instructions
-1) Navigate to this link ___________. 
+1) Clone the repository and unzip it. In the command prompt, navigate to PIC16B_Group_Project>tutorial_zillow>flask and run the command "flask run." Note: You may need to install some packages like plotly pandas and flask using the pip install command. Copy the link that appears in the command prompt and paste it in your browser
 
 2) The first page is a map of the United States with interactive buttons on the ten most populated cities. Simply select the city of interest and it will take you to the next page. 
 
