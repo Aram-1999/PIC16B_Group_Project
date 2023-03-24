@@ -1,5 +1,6 @@
 <!doctype html>
 <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='form_styles.css') }}">
 <html>
     <head>
         <title>Data Visualization</title>
@@ -25,9 +26,9 @@
         <br>
         <div id="graph2"></div>
         <h3>Customize the Visualization</h3>
-        <p1>
+        <p>
             You can also customize the graph by applying the following filters:
-        </p1>
+        </p>
         <form method="post">
             <select name="features">
                 <option value="bedrooms">Bedrooms</option>
@@ -43,12 +44,22 @@
                 <input type="text" name="maximum" placeholder="Maximum">
             </select>
             <br>
-            <p1>Choose home type:</p1><br>
+            <p>Choose home type:</p>
             <input type="checkbox" name="apartment" value="APARTMENT">Apartment<br>
             <input type="checkbox" name="condo" value="CONDO">Condo<br>
             <input type="checkbox" name="lot" value="LOT">Lot</option><br>
             <input type="checkbox" name="multi_family" value="MULTI_FAMILY">Multi Family Home<br>
             <input type="checkbox" name="townhouse" value="TOWNHOUSE">Townhouse</option><br>
+            <p>Choose the style of the map:</p>
+            <select name="style">
+                <option value="open-street-map">open-street-map</option>
+                <option value="white-bg">white-bg</option>
+                <option value="carto-positron">carto-positron</option>
+                <option value="carto-darkmatter">carto-darkmatter</option>
+                <option value="stamen- terrain">stamen- terrain</option>
+                <option value="stamen-toner">stamen-toner</option>
+                <option value="stamen-watercolor">stamen-watercolor</option>
+            </select> <br> <br>
             <button type="submit" class="btn btn-primary">Apply</button>
         </form>
     </body>

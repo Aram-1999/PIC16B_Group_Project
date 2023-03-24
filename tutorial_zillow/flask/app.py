@@ -45,6 +45,7 @@ def mapbox(name, **kwargs):
     """
 
     df = pd.read_csv(f"Datasets/{name}.csv")
+    center = {'lat': df['latitude'][0], 'lon': df['longitude'][0]}
 
     for key, value in kwargs.items():
         if(key == "feature"):
@@ -72,14 +73,15 @@ def mapbox(name, **kwargs):
                 maximum = int(maximum)
                 df = df[df[feature_min_max] <= maximum]
 
-    fig = px.scatter_mapbox(df, 
+    fig = px.scatter_mapbox(df,
+                            center = center, 
                             hover_data = ["address/city","price", 'bathrooms', 'bedrooms',
                                           'homeType'],
                             lat = "latitude",
                             lon = "longitude", 
                             zoom = 8,
                             height = 600,
-                            mapbox_style="open-street-map")
+                            mapbox_style=kwargs.pop("style", "open-street-map"))
 
     fig.update_layout(margin={"r":30,"t":10,"l":30,"b":0})
     
@@ -92,17 +94,38 @@ def density_mapbox(name, **kwargs):
 
     df = pd.read_csv(f"Datasets/{name}.csv")
     sample_size = df.shape[0]
+    center = {'lat': df['latitude'][0], 'lon': df['longitude'][0]}
 
     for key, value in kwargs.items():
         if(key == "feature"):
             feature = value
         if(key == "number"):
             num = value
-            num = int(num)
-            df = df[df[feature] == num]
+            if num != '':
+                num = int(num)
+                df = df[df[feature] == num]
+        if(key == "feature_type"):
+            feature_type = value
+            if feature_type != []:
+                df = df[df["homeType"].isin(feature_type)]
+        if(key == "feature_min_max"):
+            feature_min_max = value
+        if(key == "min"):
+            minimum = value
+            if minimum != '':
+                minimum = int(minimum)
+                df = df[df[feature_min_max] >= minimum]
+        if(key == "max"):
+            maximum = value
+            print(maximum, feature_min_max)
+            if maximum != '':
+                maximum = int(maximum)
+                df = df[df[feature_min_max] <= maximum]
 
-    radius = 6 * sample_size // df.shape[0]
-
+    
+    radius = 5 * int(np.log2((sample_size + df.shape[0])/ df.shape[0]))
+    if radius < 1:
+        radius = 1
     fig = px.density_mapbox(df, 
                             hover_data = ["address/city","price", 'bathrooms', 'bedrooms'],
                             lat = "latitude",
@@ -110,7 +133,7 @@ def density_mapbox(name, **kwargs):
                             zoom = 8,
                             radius = radius,
                             height = 600,
-                            mapbox_style="open-street-map")
+                            mapbox_style=kwargs.pop("style", "open-street-map"))
 
     fig.update_layout(margin={"r":30,"t":10,"l":30,"b":0})
     
@@ -201,6 +224,8 @@ def visualization():
         min = request.form.get("minimum")
         max = request.form.get('maximum')
         feature_min_max = request.form.get("features_min_max")
+        style = request.form.get("style")
+        print(style)
         feature_type = []
         if request.form.get("apartment"):
             feature_type.append(request.form.get("apartment"))
@@ -218,8 +243,11 @@ def visualization():
         graph1 = mapbox(city, feature=feature, number=number,
                         feature_type=feature_type,
                         feature_min_max=feature_min_max,
-                        min=min, max=max)
-        graph2 = density_mapbox(city)
+                        min=min, max=max, style=style)
+        graph2 = density_mapbox(city, feature=feature, number=number,
+                        feature_type=feature_type,
+                        feature_min_max=feature_min_max,
+                        min=min, max=max, style=style)
         return render_template('visualization.html', city=city, graph1 = graph1,
                                graph2=graph2)
     else:
