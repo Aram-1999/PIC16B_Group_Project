@@ -19,6 +19,7 @@ def main():
 
 @app.route('/data_collection', methods=['POST', 'GET'])
 def data_collection():
+
     if request.method == 'GET':
         city = request.args.get('city')
         return render_template('data_collection.html', city=city)
@@ -31,14 +32,12 @@ def data_collection():
         sqft=request.form["sqft"]
         session['sqft_info'] = sqft
         year_made=request.form["year_made"]
-        home_type=request.form["home_type"]
-        zipcode=request.form["zipcode"]
-        return render_template('data_collection.html', 
-                               bed=bed, bath=bath, sqft=sqft,
-                               year_made=year_made,
-                               home_type=home_type,
-                               zipcode=zipcode,
-                               city=city)
+        return render_template('data_collection.html', city = city)
+                            #    bed=bed, bath=bath, sqft=sqft,
+                            #    year_made=year_made,
+                            #    home_type=home_type,
+                            #    zipcode=zipcode,
+                            #    city=city)
 
 def mapbox(name, **kwargs):
     """

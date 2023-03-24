@@ -14,6 +14,10 @@
 </nav>
 <h1 class="collection">{% block title %}Data Collection{% endblock %}</h1>
 {% block content %}
+{% if prediction %}
+    <p style ="font-size: 20px; text-align: center;">
+        The predicted price for this property is {{ price }}</p>
+{% endif %}
 <form class="collection" method="post">
     <label for="bed" class="collection">Bedrooms:</label>
     <input type="number" name="bed" id="bed" min="0" class="collection">
@@ -50,7 +54,3 @@
     <input type="submit" value="Submit" class="collection">
 </form>
 {% endblock %}
-{% if prediction %}
-    <p style ="font-size: 20px; text-align: center;">
-        The predicted price for this property is {{ price }}</p>
-{% endif %}
