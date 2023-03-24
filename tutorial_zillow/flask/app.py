@@ -40,7 +40,6 @@ def data_collection():
         with open('Model/model1.pkl', 'rb') as f:
             model = pickle.load(f)
         
-        
         price = model.predict(pd.DataFrame({
             'address/zipcode': [zipcode],
             'bathrooms': [bed],
