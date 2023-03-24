@@ -12,6 +12,80 @@ Link to GitHub Repo:
 
 ### Machine Learning Model
 
+Because the user is inputting mostly numerical values (e.g. the number of bedrooms) and the goal is to accurately model the price value of that specific home, our group decided to utilize a regression model. To do this, we first needed to clean/impute the missing values in our dataset by using the mean of each column. After data preprocessing, we proceeded with splitting our data into predictor variables and target variables, then split each of these into training, validation, and testing data respectively.
+---
+
+For determining actual model itself, we used a nice tool called `lazypredict` in order to run through many regression models under `scikit-learn` and evaluate their accuracies. (Read more about its description here: <https://pypi.org/project/lazypredict/>). This way, we were able to increase efficiency and produce an organized table with the R-squared value and RMSE (Root-mean-square-error) of each model.
+
+The following code demonstrates how `lazypredict` was implemented:
+
+```python
+pip install lazypredict # first install the library
+
+import lazypredict
+from lazypredict.Supervised import LazyRegressor # this will import all regressors found
+from sklearn.utils import all_estimators
+from sklearn.base import RegressorMixin
+chosen_regressors = [
+    'SVR',
+    'BaggingRegressor',
+    'RandomForestRegressor',
+    'GradientBoostingRegressor',
+    'LinearRegression',
+    'RidgeCV',
+    'LassoCV',
+    'KNeighborsRegressor'
+]
+
+REGRESSORS = [
+    est
+    for est in all_estimators()
+    if (issubclass(est[1], RegressorMixin) and (est[0] in chosen_regressors))
+]
+
+reg = LazyRegressor(verbose=0, ignore_warnings=False, custom_metric=None, 
+                    regressors=REGRESSORS)
+models, predictions = reg.fit(X_train, X_test, y_train, y_test)
+print(models)
+```
+
+> As seen in the above code, it is important to note that we did not run through all 42 regression models available through `lazypredict`. There are mainly two reasons: the first was that some regressors did not match with our input dimensions and the second was that some regressors just took too long to execute and we were not able to produce accurate results in the end. Thus, we picked out 8 that made the most sense in terms of our data.
+
+After running through 8 selected regressors, we ordered them based on their adjusted R-squared (coefficient of determination) and RSME values that indicate how well the model is fitting our data. The top result (the one with the highest R-squared value and the lowest RSME value) was the `BaggingRegressor`; therefore, we defined `model1` as follows:
+
+```python
+
+model1 = BaggingRegressor(max_features=1.0, 
+                          n_estimators=10, 
+                          bootstrap=True, 
+                          random_state=25)
+model1.fit(X_train, y_train)
+```
+---
+
+Now, to implement this model into our dynamic website, we used the `pickle` module to save and transfer over the model. The following code demonstrates the process:
+
+```python
+import pickle
+
+with open('Model/model1.pkl', 'rb') as f:
+            model = pickle.load(f)
+
+price = model.predict(pd.DataFrame({
+    'address/zipcode': [zipcode],
+    'bathrooms': [bed],
+    'bedrooms': [bath]
+})) 
+```
+---
+
+To see how this model actually functions on the webpage, the following image shows how the model is implemented and what the user can expect after inputting certain information about a house: 
+
+![](model_visual.jpg)
+
+We picked Los Angeles as our target city, and the user is able input data points (number of bedrooms, bathrooms, square feet, year made, home type, and zipcode) through the data collection page. In this particular case, the values 2, 2, 1100, 2015, condo, and 90024 were entered, respectively, and our model was able to predict a price of $1,352,491. Users can play around with the input values to see various predictions. 
+
+
 ### Dynamic Website
 
 We built a dynamic website using Flask that allows users to see housing data visualizations for the ten largest cities in the U.S. and get price predictions for their own home. On the home page is a map of the U.S. where the user can click on their desired city. This takes them to a page with geographic visualization of the housing data using plotly. The user can also customize the visualization by applying filters and submitting the form on the bottom of the page.
@@ -65,4 +139,4 @@ def data_collection():
 
 ## Conclusion
 
-We hope for this website to be useful for people looking to sell their house or exploring housing in the ten largest cities in the U.S. However, we must also consider the possible ethical ramifications of this project. Having all the data accessible in easy to understand visualizataions could make it easy for companies or the wealthy to buy up cheap housing. This could end up displacing the current inabitants and lead to gentrification.
+We hope for this website to be useful for people looking to sell their house or exploring housing in the ten largest cities in the U.S. However, we must also consider the possible ethical ramifications of this project. Having all the data accessible in easy to understand visualizations could make it easy for companies or the wealthy to buy up cheap housing. This could end up displacing the current inabitants and lead to gentrification.
