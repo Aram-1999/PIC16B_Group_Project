@@ -16,6 +16,6 @@ The goal of this project was for users to understand the distribution of homes f
 
 5) On the data visualization page, you will be provided with six scatter plots and three histograms with each plot containing a marker to illustrate your entered information. The first three scatter plots show the count of the number of homes compared to bedrooms, bathrooms, and square footage. The next three scatter plots show the median price of homes compared to bedrooms, bathrooms, and square footage. The three histograms show pairwise count plots for the aforementioned features. All of these plots are adjustable as they were coded with Plotly. The goal of this page is for you to understand where your home compares to the rest of the market. The final optional link to select is the view data page. 
 
-6) On the view data page, you can see the dataframe for the selected city with all features listed. You can also change the city of interested with the drop down at the top. 
+6) On the view data page, you can see the dataframe for the selected city with all features listed. You can also change the city of interest with the drop down at the top. 
 
 
