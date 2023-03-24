@@ -45,7 +45,7 @@ def mapbox(name, **kwargs):
     """
 
     df = pd.read_csv(f"Datasets/{name}.csv")
-    center = {'lat': df['latitude'][0], 'lon': df['longitude'][0]}
+    center = {'lat': np.mean(df['latitude']), 'lon': np.mean(df['longitude'][0])}
 
     for key, value in kwargs.items():
         if(key == "feature"):
@@ -94,7 +94,8 @@ def density_mapbox(name, **kwargs):
 
     df = pd.read_csv(f"Datasets/{name}.csv")
     sample_size = df.shape[0]
-    center = {'lat': df['latitude'][0], 'lon': df['longitude'][0]}
+    center = {'lat': np.mean(df['latitude']), 'lon': np.mean(df['longitude'][0])}
+
 
     for key, value in kwargs.items():
         if(key == "feature"):
@@ -123,10 +124,14 @@ def density_mapbox(name, **kwargs):
                 df = df[df[feature_min_max] <= maximum]
 
     
-    radius = 5 * int(np.log2((sample_size + df.shape[0])/ df.shape[0]))
-    if radius < 1:
+    if df.shape[0] != 0:
+        radius = 5 * int(np.log2((sample_size + df.shape[0]) / df.shape[0]))
+        if radius < 1:
+            radius = 1
+    else:
         radius = 1
     fig = px.density_mapbox(df, 
+                            center = center,
                             hover_data = ["address/city","price", 'bathrooms', 'bedrooms'],
                             lat = "latitude",
                             lon = "longitude", 
