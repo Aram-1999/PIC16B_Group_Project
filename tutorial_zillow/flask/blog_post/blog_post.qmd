@@ -5,6 +5,10 @@ date: "2023-03-24"
 ---
 
 Link to GitHub Repo:
+<https://github.com/Aram-1999/PIC16B_Group_Project>
+
+Link to the Model's Notebook:
+<https://colab.research.google.com/drive/10SH5oPbmAXK8ar6tU2xDbnok0Qi80svr#scrollTo=fOTFpK9GHvVx>
 
 ## Overview
 
@@ -136,6 +140,70 @@ def data_collection():
 
 
 ### Complex Data Visualizations
+The website contains two pages for data visualization - one for geographic representation and another for histogram and scatter plot visualizations. The geographic visualization page contains two graphs utilizing Plotly’s  Mapbox platform. The user can navigate to this page by clicking on one of the cities on the home page. This would display the default graphs for the entire data of that city. The first visualization is similar to Zillow’s visualization graph. It provides some valuable insights into the data that has been used to train the model. The user can hover over data points and check out the number of bedrooms, bathrooms, sqft, and home type. The second graph utilizes Plotly’s density Mapbox platform. It shows how dense the data points are in the given region. Here is an example of how the graphs look like for the city of New York. \
+---
+![New York geographic graph1](New_York_graph1.png)
+![New York geographic graph2](New_York_graph2.png)
+
+The geographic visualization page also contains filters that can be used by the user to generate custom geographic visualizations. The user can choose to display only the properties with certain number of bedrooms or bathrooms, adjust the range for price, sqft, or year made, select the home type and the style of the map.
+---
+Here is the function that has been used for making the first geographic graph (It is located in the myGraph.py module). The function that had been used for making the second graph is almost exactly the same. The only difference lies in the choice of Plotly's platform, between Mapbox and Density Mapbox.
+```{python}
+def mapbox(name, **kwargs):
+    """
+    Creates a mapbox of all the data points scraped for the name (city name) parameter
+    
+    Args: name -- a city to be used for the geographic visualization,str
+          **kwargs -- other parameters to filter the data to update the visualization
+          
+    Returns: A json with the mapbox figure
+    """
+
+    df = pd.read_csv(f"Datasets/{name}.csv") #Reads the data 
+    center = {'lat': np.mean(df['latitude']), 'lon': np.mean(df['longitude'][0])} #Finds the center of the map
+
+    for key, value in kwargs.items():
+        if(key == "feature"):
+            feature = value
+        if(key == "number"):
+            num = value
+            if num != '':
+                num = int(num)
+                df = df[df[feature] == num] #Filters the data for specific features having a set value. Ex Bathrooms = 2 or Bedrooms = 3
+        if(key == "feature_type"):
+            feature_type = value
+            if feature_type != []:
+                df = df[df["homeType"].isin(feature_type)] #Filters the data to only include specific home types
+        if(key == "feature_min_max"):
+            feature_min_max = value
+        if(key == "min"):
+            minimum = value
+            if minimum != '':
+                minimum = int(minimum)
+                df = df[df[feature_min_max] >= minimum] #Filters the data for specific features having a set minimum value. Ex Min Price = 100k or Min Sqft = 2000
+        if(key == "max"):
+            maximum = value
+            print(maximum, feature_min_max)
+            if maximum != '':
+                maximum = int(maximum)
+                df = df[df[feature_min_max] <= maximum]  #Filters the data for specific features having a set max value. Ex Max Price = 250k or Max Year Built = 2010
+    #Creates plotly scatter mapbox using data with/without added filters
+    fig = px.scatter_mapbox(df,
+                            center = center, 
+                            hover_data = ["address/city","price", 'bathrooms', 'bedrooms',
+                                          'homeType'],
+                            lat = "latitude",
+                            lon = "longitude", 
+                            zoom = 8,
+                            height = 600,
+                            mapbox_style=kwargs.pop("style", "open-street-map"))
+    fig.update_layout(margin={"r":30,"t":10,"l":30,"b":0}) #sets the margin
+    
+    return json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder) #returns the json
+```
+The function reads the data for the city (uses the name parameter as the name of the city). It find the center of the plot which is neccessary for displaying the city on the map even if no data points are left after filtering the data. This function accepts a set of key word arguments which act as filters mentioned above. These filters are applied next and a plot is created. After all this is done, the function creates a json file which will be used by the jinja template to render the graph.
+
+
 
 ## Conclusion
 
