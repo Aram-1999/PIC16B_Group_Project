@@ -1,6 +1,8 @@
 # PIC16B Group Project -- Visualizing The Zillow Home Distribution
 ### By: Ryan, Emily, Aram, and Jun
 
+<img width="1440" alt="LA_visual" src="https://github.com/Aram-1999/PIC16B_Group_Project/assets/79065393/ea1b74fb-7f9c-415a-9656-c45e7d45ca2d">
+
 
 ## Description
 The goal of this project was for users to understand the distribution of homes for sale on Zillow. Typically, prospective home buyers and sellers go to Zillow to find similar homes in order to gain an understanding of a given house's value. Our project would give users a better understanding as it would explain the entire housing market for a given city. This includes geographic visualizations, histograms and scatterplots, and a predictive model that works with user data. We decided to limit our focus to the top ten major cities in the United States: Los Angeles, San Antonio, Phileadelphia, San Diego, Houston, Dallas, Phoenix, New York, Chicago, and San Jose. Using the api, we were able to obtain information on 1500 homes for each city with 30 features.  
